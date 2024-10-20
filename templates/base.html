@@ -10,13 +10,13 @@
     <div class="navbar">
         <div class="logo">Unit Converter</div>
         <div>
-            <a href="/length">Length</a>
+            <a href="{{ url_for('get_length_converter') }}">Length</a>
             <a href="/temperature">Temperature</a>
-            <a href="/weight">Weight</a>
+            <a href="{{ url_for('get_weight_converter') }}">Weight</a>
         </div>
     </div>
     {% block content %}
-    
+
     {% endblock content %}
 </body>
 

@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class UnitsWeightType(Enum):
+class UnitsWeightType(str, Enum):
     MILLIGRAM = 'Milligram'
     GRAM = 'Gram'
     KILOGRAM = 'Kilogram'
@@ -9,36 +9,62 @@ class UnitsWeightType(Enum):
     POUND = 'Pound'
 
 
-def convert_weight(input_value: float, input_measure: UnitsWeightType, output_measure: UnitsWeightType) -> float:  # noqa E501
+class UnitsLengthType(str, Enum):
+    MILLIMETER = "Millimeter"
+    CENTIMETER = "Centimeter"
+    METER = "Meter"
+    KILOMETER = "Kilometer"
+    INCH = "Inch"
+    FOOT = "Foot"
+    YARD = "Yard"
+    MILE = "Mile"
+
+
+def convert_weight(
+        input_value: float,
+        input_measure: UnitsWeightType,
+        output_measure: UnitsWeightType
+        ) -> float:
+
     weight_units = {
-        "Milligram": 0.000001,
-        "Gram": 0.001,
-        "Kilogram": 1,
-        "Ounce": 0.02835,
-        "Pound": 0.453592
+        UnitsWeightType.MILLIGRAM: 0.000001,
+        UnitsWeightType.GRAM: 0.001,
+        UnitsWeightType.KILOGRAM: 1,
+        UnitsWeightType.OUNCE: 0.02835,
+        UnitsWeightType.POUND: 0.453592
     }
     value_in_kilogram = input_value * weight_units[input_measure]
     converted_value = value_in_kilogram / weight_units[output_measure]
     return round(converted_value, 3)
 
 
-def convert_length(input_value: float, input_measure: str, output_measure: str) -> float:  # noqa 501
+def convert_length(
+        input_value: float,
+        input_measure: UnitsLengthType,
+        output_measure: UnitsLengthType
+        ) -> float:
+
     length_units = {
-        "millimeter": 0.001,
-        "centimeter": 0.01,
-        "meter": 1,
-        "kilometer": 1000,
-        "inch": 0.0254,
-        "foot": 0.3048,
-        "yard": 0.9144,
-        "mile": 1609.34
+        UnitsLengthType.MILLIMETER: 0.001,
+        UnitsLengthType.CENTIMETER: 0.01,
+        UnitsLengthType.METER: 1,
+        UnitsLengthType.KILOMETER: 1000,
+        UnitsLengthType.INCH: 0.0254,
+        UnitsLengthType.FOOT: 0.3048,
+        UnitsLengthType.YARD: 0.9144,
+        UnitsLengthType.MILE: 1609.34
     }
     value_in_meters = input_value * length_units[input_measure]
     converted_value = value_in_meters / length_units[output_measure]
     return round(converted_value, 3)
 
 
-def convert_temperature(input_value: float, input_measure: str, uotput_measure: str) -> float: # noqa 501
+def convert_temperature(
+        input_value: float,
+        input_measure: str,
+        uotput_measure: str
+        ) -> float:
+
     convert_to_kevin = {
         "Celsius": celsius_to_kelvin(input_value),
         "Fahrenheit": fahrenheit_to_kelvin(input_value),

@@ -3,12 +3,14 @@
 {% block title %}Weight converter{% endblock %}
 
 {% block content %}
-    <h1>Weight Converter</h1>
+    <h1>Weight converter</h1>
     <form method="post">
         <label for="value">Value:</label>
-        <input type="text" id="value" name="value" value="{{ input_value }}" required> <br>
+        <input type="number" id="value" name="value" value="{{ input_value }}" required> <br>
         {% if errors %}
-        {{ errors['weight']}} <br>
+            {% for error in errors.values() %}
+            {{ error }} <br>
+            {% endfor %}
         {% endif %}
         <label for="from_unit">From:</label>
         <!-- Create list of weight unit type -->
