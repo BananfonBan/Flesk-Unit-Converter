@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Weight converter{% endblock %}
+
+{% block content %}
+    <h1>Weight Converter</h1>
+    <form method="post">
+        <label for="value">Value:</label>
+        <input type="text" id="value" name="value" value="{{ input_value }}" required> <br>
+        {% if errors %}
+        {{ errors['weight']}} <br>
+        {% endif %}
+        <label for="from_unit">From:</label>
+        <!-- Create list of weight unit type -->
+        <select id="from_unit" name="from_unit">
+            {% for WeightUnit in UnitsWeightType %}
+                <option value="{{ WeightUnit.value }}" {{ 'selected' if input_measure==WeightUnit.value }}>{{ WeightUnit.value }}</option>
+            {% endfor %}
+        </select>
+        <label for="to_unit">To:</label>
+        <select id="to_unit" name="to_unit">
+            {% for WeightUnit in UnitsWeightType %}
+                <option value="{{ WeightUnit.value }}" {{ 'selected' if output_measure==WeightUnit.value }}>{{ WeightUnit.value }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Convert</button>
+    </form>
+
+    {% if result is not none %}
+    <h2>Converted Value: {{ result }}</h2>
+    {% endif %}
+
+{% endblock %}
