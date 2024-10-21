@@ -20,6 +20,12 @@ class UnitsLengthType(str, Enum):
     MILE = "Mile"
 
 
+class UnitsTemperatureType(str, Enum):
+    CELSIUS = "Celsius"
+    FAHRENHEIT = "Fahrenheit"
+    KELVIN = "Kelvin"
+
+
 def convert_weight(
         input_value: float,
         input_measure: UnitsWeightType,
@@ -61,22 +67,22 @@ def convert_length(
 
 def convert_temperature(
         input_value: float,
-        input_measure: str,
-        uotput_measure: str
+        input_measure: UnitsTemperatureType,
+        output_measure: UnitsTemperatureType
         ) -> float:
 
     convert_to_kevin = {
-        "Celsius": celsius_to_kelvin(input_value),
-        "Fahrenheit": fahrenheit_to_kelvin(input_value),
-        "Kelvin": input_value
+        UnitsTemperatureType.CELSIUS: celsius_to_kelvin(input_value),
+        UnitsTemperatureType.FAHRENHEIT: fahrenheit_to_kelvin(input_value),
+        UnitsTemperatureType.KELVIN: input_value
     }
     temperature_in_kelvin = convert_to_kevin[input_measure]
     convert_kelvin_to = {
-        "Celsius": kelvin_to_celsius(temperature_in_kelvin),
-        "Fahrenheit": kelvin_to_fahrenheit(temperature_in_kelvin),
-        "Kelvin": temperature_in_kelvin
+        UnitsTemperatureType.CELSIUS: kelvin_to_celsius(temperature_in_kelvin),
+        UnitsTemperatureType.FAHRENHEIT: kelvin_to_fahrenheit(temperature_in_kelvin), # noqa E501
+        UnitsTemperatureType.KELVIN: temperature_in_kelvin
     }
-    converted_value = convert_kelvin_to[uotput_measure]
+    converted_value = convert_kelvin_to[output_measure]
     return round(converted_value, 3)
 
 

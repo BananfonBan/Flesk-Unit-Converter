@@ -1,8 +1,10 @@
 from flask import Flask, request, render_template
 from converter import (UnitsWeightType,
                        UnitsLengthType,
+                       UnitsTemperatureType,
                        convert_weight,
-                       convert_length)
+                       convert_length,
+                       convert_temperature)
 
 app = Flask(__name__)
 
@@ -36,7 +38,7 @@ def post_weight_converter():
             input_measure=input_measure,
             output_measure=output_measure,
             errors=errors
-        )
+        ), 422
 
     result = convert_weight(
         input_value=float(input_value),
@@ -77,7 +79,7 @@ def post_length_converter():
             input_measure=input_measure,
             output_measure=output_measure,
             errors=errors
-        )
+        ), 422
 
     result = convert_length(
         input_value=float(input_value),
@@ -87,6 +89,47 @@ def post_length_converter():
     return render_template(
         'length.html',
         UnitsLengthType=UnitsLengthType,
+        input_value=input_value,
+        input_measure=input_measure,
+        output_measure=output_measure,
+        result=result
+    )
+
+
+@app.get('/temperature')
+def get_temperature_converter():
+    return render_template(
+        'temperature.html',
+        UnitsTemperatureType=UnitsTemperatureType
+    )
+
+
+@app.post('/temperature')
+def post_temperature_converter():
+    request_data = request.form.to_dict()
+    input_value = request_data['value']
+    input_measure = request_data['from_unit']
+    output_measure = request_data['to_unit']
+    errors = validate(value=input_value)
+
+    if errors:
+        return render_template(
+            'temperature.html',
+            UnitsTemperatureType=UnitsTemperatureType,
+            input_value=input_value,
+            input_measure=input_measure,
+            output_measure=output_measure,
+            errors=errors
+        ), 422
+
+    result = convert_temperature(
+        input_value=float(input_value),
+        input_measure=input_measure,
+        output_measure=output_measure)
+
+    return render_template(
+        'temperature.html',
+        UnitsTemperatureType=UnitsTemperatureType,
         input_value=input_value,
         input_measure=input_measure,
         output_measure=output_measure,
@@ -105,11 +148,6 @@ def login():
         return 'Вы вошли в систему!'
     else:
         return render_template('login.html')
-
-
-@app.route("/length")
-def length():
-    return render_template("length.html")
 
 
 def validate(value):
