@@ -8,6 +8,13 @@ from converter import (UnitsWeightType,
 
 app = Flask(__name__)
 
+# TODO
+# - История запросов. Можно реализовать через Cookie или Сессии
+# - Сделать авторматические тесты
+# - Настроить Makefile
+# - Добавить валидащию значений для температур (Не могут быть ниже абсолютного нуля)
+# - Дабавить валидацию веса и длины (Не могут быть меньше 0)
+
 
 @app.route("/")
 def home():
@@ -28,29 +35,33 @@ def post_weight_converter():
     input_value = request_data['value']
     input_measure = request_data['from_unit']
     output_measure = request_data['to_unit']
-    errors = validate(value=input_value)
+    rounding = request.form.get('rounding', type=int)
+    errors = validate_value(value=input_value)
+
+    response_dict = {
+        'UnitsWeightType': UnitsWeightType,
+        'input_value': input_value,
+        'input_measure': input_measure,
+        'output_measure': output_measure,
+        'rounding': rounding
+    }
 
     if errors:
         return render_template(
             'weight.html',
-            UnitsWeightType=UnitsWeightType,
-            input_value=input_value,
-            input_measure=input_measure,
-            output_measure=output_measure,
+            **response_dict,
             errors=errors
         ), 422
 
     result = convert_weight(
         input_value=float(input_value),
         input_measure=input_measure,
-        output_measure=output_measure)
+        output_measure=output_measure,
+        rounding=rounding)
 
     return render_template(
         'weight.html',
-        UnitsWeightType=UnitsWeightType,
-        input_value=input_value,
-        input_measure=input_measure,
-        output_measure=output_measure,
+        **response_dict,
         result=result
     )
 
@@ -69,29 +80,33 @@ def post_length_converter():
     input_value = request_data['value']
     input_measure = request_data['from_unit']
     output_measure = request_data['to_unit']
-    errors = validate(value=input_value)
+    rounding = request.form.get('rounding', type=int)
+    errors = validate_value(value=input_value)
+
+    response_dict = {
+        'UnitsLengthType': UnitsLengthType,
+        'input_value': input_value,
+        'input_measure': input_measure,
+        'output_measure': output_measure,
+        'rounding': rounding
+    }
 
     if errors:
         return render_template(
             'length.html',
-            UnitsWeightType=UnitsLengthType,
-            input_value=input_value,
-            input_measure=input_measure,
-            output_measure=output_measure,
+            **response_dict,
             errors=errors
         ), 422
 
     result = convert_length(
         input_value=float(input_value),
         input_measure=input_measure,
-        output_measure=output_measure)
+        output_measure=output_measure,
+        rounding=rounding)
 
     return render_template(
         'length.html',
-        UnitsLengthType=UnitsLengthType,
-        input_value=input_value,
-        input_measure=input_measure,
-        output_measure=output_measure,
+        **response_dict,
         result=result
     )
 
@@ -110,47 +125,38 @@ def post_temperature_converter():
     input_value = request_data['value']
     input_measure = request_data['from_unit']
     output_measure = request_data['to_unit']
-    errors = validate(value=input_value)
+    rounding = request.form.get('rounding', type=int)
+    errors = validate_value(value=input_value)
+
+    response_dict = {
+        'UnitsTemperatureType': UnitsTemperatureType,
+        'input_value': input_value,
+        'input_measure': input_measure,
+        'output_measure': output_measure,
+        'rounding': rounding
+    }
 
     if errors:
         return render_template(
             'temperature.html',
-            UnitsTemperatureType=UnitsTemperatureType,
-            input_value=input_value,
-            input_measure=input_measure,
-            output_measure=output_measure,
+            **response_dict,
             errors=errors
         ), 422
 
     result = convert_temperature(
         input_value=float(input_value),
         input_measure=input_measure,
-        output_measure=output_measure)
+        output_measure=output_measure,
+        rounding=rounding)
 
     return render_template(
         'temperature.html',
-        UnitsTemperatureType=UnitsTemperatureType,
-        input_value=input_value,
-        input_measure=input_measure,
-        output_measure=output_measure,
+        **response_dict,
         result=result
     )
 
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        print(username)
-        password = request.form['password']
-        print(password)
-        # проверка логина и пароля
-        return 'Вы вошли в систему!'
-    else:
-        return render_template('login.html')
-
-
-def validate(value):
+def validate_value(value):
     errors = {}
     if not value:
         errors['empty_input'] = 'Value can not be empty'

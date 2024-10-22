@@ -29,7 +29,8 @@ class UnitsTemperatureType(str, Enum):
 def convert_weight(
         input_value: float,
         input_measure: UnitsWeightType,
-        output_measure: UnitsWeightType
+        output_measure: UnitsWeightType,
+        rounding: int = None
         ) -> float:
 
     weight_units = {
@@ -41,13 +42,16 @@ def convert_weight(
     }
     value_in_kilogram = input_value * weight_units[input_measure]
     converted_value = value_in_kilogram / weight_units[output_measure]
-    return round(converted_value, 3)
+    if not rounding:
+        return converted_value
+    return round(converted_value, rounding)
 
 
 def convert_length(
         input_value: float,
         input_measure: UnitsLengthType,
-        output_measure: UnitsLengthType
+        output_measure: UnitsLengthType,
+        rounding: int = None
         ) -> float:
 
     length_units = {
@@ -62,13 +66,16 @@ def convert_length(
     }
     value_in_meters = input_value * length_units[input_measure]
     converted_value = value_in_meters / length_units[output_measure]
-    return round(converted_value, 3)
+    if not rounding:
+        return converted_value
+    return round(converted_value, rounding)
 
 
 def convert_temperature(
         input_value: float,
         input_measure: UnitsTemperatureType,
-        output_measure: UnitsTemperatureType
+        output_measure: UnitsTemperatureType,
+        rounding: int = None
         ) -> float:
 
     convert_to_kevin = {
@@ -83,7 +90,9 @@ def convert_temperature(
         UnitsTemperatureType.KELVIN: temperature_in_kelvin
     }
     converted_value = convert_kelvin_to[output_measure]
-    return round(converted_value, 3)
+    if not rounding:
+        return converted_value
+    return round(converted_value, rounding)
 
 
 def kelvin_to_celsius(value):
