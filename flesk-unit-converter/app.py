@@ -1,19 +1,16 @@
 from flask import Flask, request, render_template
-from converter import (UnitsWeightType,
-                       UnitsLengthType,
-                       UnitsTemperatureType,
-                       convert_weight,
-                       convert_length,
-                       convert_temperature)
+from .converter import (UnitsWeightType,
+                        UnitsLengthType,
+                        UnitsTemperatureType,
+                        convert_weight,
+                        convert_length,
+                        convert_temperature)
 
 app = Flask(__name__)
 
 # TODO
-# - История запросов. Можно реализовать через Cookie или Сессии
-# - Сделать авторматические тесты
-# - Настроить Makefile
-# - Добавить валидащию значений для температур (Не могут быть ниже абсолютного нуля)
-# - Дабавить валидацию веса и длины (Не могут быть меньше 0)
+# - Make automatic tests
+# - Set up commands for Makefile
 
 
 @app.route("/")
@@ -38,7 +35,8 @@ def post_weight_converter():
     rounding = request.form.get('rounding', type=int)
     errors = {}
     errors.update(validate_value(value=input_value))
-    errors.update(validate_weight(value=float(input_value)))
+    if not errors:
+        errors.update(validate_weight(value=float(input_value)))
 
     response_dict = {
         'UnitsWeightType': UnitsWeightType,
@@ -85,7 +83,8 @@ def post_length_converter():
     rounding = request.form.get('rounding', type=int)
     errors = {}
     errors.update(validate_value(value=input_value))
-    errors.update(validate_length(value=float(input_value)))
+    if not errors:
+        errors.update(validate_length(value=float(input_value)))
 
     response_dict = {
         'UnitsLengthType': UnitsLengthType,
@@ -132,8 +131,8 @@ def post_temperature_converter():
     rounding = request.form.get('rounding', type=int)
     errors = {}
     errors.update(validate_value(value=input_value))
-    print(input_measure)
-    errors.update(valid_temperature(value=float(input_value), measure=input_measure)) # noqa E501
+    if not errors:
+        errors.update(valid_temperature(value=float(input_value), measure=input_measure)) # noqa E501
 
     response_dict = {
         'UnitsTemperatureType': UnitsTemperatureType,

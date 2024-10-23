@@ -1,9 +1,12 @@
 [tool.poetry]
-name = "flesk first project"
+name = "flesk-unit-converter"
 version = "0.1.0"
 description = ""
 authors = ["BananfonBan"]
 readme = "README.md"
+packages = [
+    { include = 'flesk-unit-converter' }
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"
