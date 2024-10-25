@@ -1,5 +1,11 @@
+linter:
+	poetry run flake8
+
+install:
+	poetry install
+
 start-debug:
 	flask --app flesk-unit-converter/app --debug run --port 8000
 
 start:
-	flask --app flesk-unit-converter/app run --port 8000
+	poetry run gunicorn --workers=2 --bind=127.0.0.1:8000 'flesk-unit-converter.wsgi-gunicorn:create_app()'
