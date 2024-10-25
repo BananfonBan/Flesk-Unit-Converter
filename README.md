@@ -6,10 +6,15 @@ The application is made as an example project from [roadmap.sh](https://roadmap.
 - python = "^3.10"
 - flask = "^3.0.3"
 - jinja2 = "^3.1.4"
+- gunicorn = "^23.0.0"
 
 ### Install
-Just build the project, for example with the 'poetry install' command
+```bash
+make install
+```
 
 ### Start
+```bash
 make start
+```
 
