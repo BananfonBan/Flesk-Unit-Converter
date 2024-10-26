@@ -14,9 +14,7 @@ from .validator import (validate_value,
 app = Flask(__name__)
 
 # TODO
-# - Задепроить это дело на сайт https://dashboard.render.com/
 # - Make automatic tests
-# - Set up commands for Makefile
 
 
 @app.route("/")
