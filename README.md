@@ -3,18 +3,24 @@ This is a simple unit converter written like Flask-application.
 The application is made as an example project from [roadmap.sh](https://roadmap.sh/projects/unit-converter)
 
 ### Requirements
-- python = "^3.10"
-- flask = "^3.0.3"
-- jinja2 = "^3.1.4"
-- gunicorn = "^23.0.0"
+- python
+- poetry
+- flask
+- jinja2
+- gunicorn
 
-### Install
+### Setup
 ```bash
-make install
+make setup
 ```
 
-### Start
+### Run server
 ```bash
 make start
 ```
 
+### Example 
+
+[link](https://flesk-unit-converter.onrender.com/) to the application uploaded to [render.com](https://render.com/)
+
+Note: The page may take a long time to open, please be patient
