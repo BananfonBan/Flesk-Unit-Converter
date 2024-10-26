@@ -1,7 +1,7 @@
 linter:
 	poetry run flake8
 
-install:
+Setup:
 	poetry install
 
 start-debug:
