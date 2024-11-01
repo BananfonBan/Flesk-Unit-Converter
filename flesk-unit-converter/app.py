@@ -1,20 +1,21 @@
 from flask import Flask, request, render_template
-from .converter import (UnitsWeightType,
-                        UnitsLengthType,
-                        UnitsTemperatureType,
-                        convert_weight,
+from .converter import (convert_weight,
                         convert_length,
                         convert_temperature)
-from .validator import (validate_value,
-                        validate_weight,
-                        valid_temperature,
-                        validate_length)
-
+from .forms import WeightConverterForm, LengthConverterForm, TemperatureConverterForm
+from .config import Config
 
 app = Flask(__name__)
+app.config.from_object(Config)
 
 # TODO
 # - Make automatic tests
+# - Закончить переделку логики под работу с формами
+#       - Сделать шаблоны под температуру и длинну
+#       - Добавить обработчики в этот фай
+#       - Триста раз все проверить
+#       - Возможно переделать запуск через guicorn
+#       - залить на github и на сайт для бесплатного хостинга
 
 
 @app.route("/")
@@ -22,148 +23,52 @@ def home():
     return render_template('base.html')
 
 
-@app.get('/weight')
-def get_weight_converter():
-    return render_template(
-        'weight.html',
-        UnitsWeightType=UnitsWeightType
-    )
+@app.route('/weight', methods=['GET', 'POST'])
+def weight_converter():
+    form = WeightConverterForm()
+    if request.method == 'GET':
+        return render_template('weight.html', form=form)
+    if form.validate_on_submit():
+        result = convert_weight(
+            input_value=float(form.value.data),
+            input_measure=form.input_measure.data,
+            output_measure=form.output_measure.data,
+            rounding=form.rounding.data
+        )
+        return render_template('weight.html', form=form, result=result)
+    return render_template('weight.html', form=form), 422
 
 
-@app.post('/weight')
-def post_weight_converter():
-    request_data = request.form.to_dict()
-    input_value = request_data['value']
-    input_measure = request_data['from_unit']
-    output_measure = request_data['to_unit']
-    rounding = request.form.get('rounding', type=int)
-    errors = {}
-    errors.update(validate_value(value=input_value))
-    if not errors:
-        errors.update(validate_weight(value=float(input_value)))
-
-    response_dict = {
-        'UnitsWeightType': UnitsWeightType,
-        'input_value': input_value,
-        'input_measure': input_measure,
-        'output_measure': output_measure,
-        'rounding': rounding
-    }
-
-    if errors:
-        return render_template(
-            'weight.html',
-            **response_dict,
-            errors=errors
-        ), 422
-
-    result = convert_weight(
-        input_value=float(input_value),
-        input_measure=input_measure,
-        output_measure=output_measure,
-        rounding=rounding)
-
-    return render_template(
-        'weight.html',
-        **response_dict,
-        result=result
-    )
+@app.route('/length', methods=['GET', 'POST'])
+def length_converter():
+    form = LengthConverterForm()
+    if request.method == 'GET':
+        return render_template('length.html', form=form)
+    if form.validate_on_submit():
+        result = convert_length(
+            input_value=float(form.value.data),
+            input_measure=form.input_measure.data,
+            output_measure=form.output_measure.data,
+            rounding=form.rounding.data
+        )
+        return render_template('length.html', form=form, result=result)
+    return render_template('length.html', form=form), 422
 
 
-@app.get('/length')
-def get_length_converter():
-    return render_template(
-        'length.html',
-        UnitsLengthType=UnitsLengthType
-    )
-
-
-@app.post('/length')
-def post_length_converter():
-    request_data = request.form.to_dict()
-    input_value = request_data['value']
-    input_measure = request_data['from_unit']
-    output_measure = request_data['to_unit']
-    rounding = request.form.get('rounding', type=int)
-    errors = {}
-    errors.update(validate_value(value=input_value))
-    if not errors:
-        errors.update(validate_length(value=float(input_value)))
-
-    response_dict = {
-        'UnitsLengthType': UnitsLengthType,
-        'input_value': input_value,
-        'input_measure': input_measure,
-        'output_measure': output_measure,
-        'rounding': rounding
-    }
-
-    if errors:
-        return render_template(
-            'length.html',
-            **response_dict,
-            errors=errors
-        ), 422
-
-    result = convert_length(
-        input_value=float(input_value),
-        input_measure=input_measure,
-        output_measure=output_measure,
-        rounding=rounding)
-
-    return render_template(
-        'length.html',
-        **response_dict,
-        result=result
-    )
-
-
-@app.get('/temperature')
-def get_temperature_converter():
-    return render_template(
-        'temperature.html',
-        UnitsTemperatureType=UnitsTemperatureType
-    )
-
-
-@app.post('/temperature')
-def post_temperature_converter():
-    request_data = request.form.to_dict()
-    input_value = request_data['value']
-    input_measure = request_data['from_unit']
-    output_measure = request_data['to_unit']
-    rounding = request.form.get('rounding', type=int)
-    errors = {}
-    errors.update(validate_value(value=input_value))
-    if not errors:
-        errors.update(valid_temperature(value=float(input_value), measure=input_measure)) # noqa E501
-
-    response_dict = {
-        'UnitsTemperatureType': UnitsTemperatureType,
-        'input_value': input_value,
-        'input_measure': input_measure,
-        'output_measure': output_measure,
-        'rounding': rounding
-    }
-
-    if errors:
-        return render_template(
-            'temperature.html',
-            **response_dict,
-            errors=errors
-        ), 422
-
-    result = convert_temperature(
-        input_value=float(input_value),
-        input_measure=input_measure,
-        output_measure=output_measure,
-        rounding=rounding)
-
-    return render_template(
-        'temperature.html',
-        **response_dict,
-        result=result
-    )
+@app.route('/temperature', methods=['GET', 'POST'])
+def temperature_converter():
+    form = TemperatureConverterForm()
+    if request.method == 'GET':
+        render_template('temperature.html', form=form)
+    if form.validate_on_submit():
+        result = convert_temperature(
+            input_value=float(form.value.data),
+            input_measure=form.input_measure.data,
+            output_measure=form.output_measure.data,
+            rounding=form.rounding.data
+        )
+        return render_template('temperature.html', form=form, result=result)
+    return render_template('temperature.html', form=form), 422
 
 
 if __name__ == 'main':

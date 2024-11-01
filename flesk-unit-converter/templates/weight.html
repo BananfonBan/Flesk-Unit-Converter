@@ -3,42 +3,30 @@
 {% block title %}Weight converter{% endblock %}
 
 {% block content %}
-    <h1>Weight converter</h1>
-    <form method="post">
-        <label for="value">Value:</label>
-        <input type="text" id="value" name="value" value="{{ input_value }}" required> <br>
-        {% if errors %}
-            {% for error in errors.values() %}
-                {{ error }} <br>
-            {% endfor %}
-        {% endif %}
-        <label for="from_unit">From:</label>
-        <!-- Create list of weight unit type -->
-        <select id="from_unit" name="from_unit">
-            {% for WeightUnit in UnitsWeightType %}
-                <option value="{{ WeightUnit.value }}" {{ 'selected' if input_measure==WeightUnit.value }}>
-                    {{ WeightUnit.value }}
-                </option>
-            {% endfor %}
-        </select>
-        <label for="to_unit">To:</label>
-        <select id="to_unit" name="to_unit">
-            {% for WeightUnit in UnitsWeightType %}
-                <option value="{{ WeightUnit.value }}" {{ 'selected' if output_measure==WeightUnit.value }}>
-                    {{ WeightUnit.value }}
-                </option>
-            {% endfor %}
-        </select>
-        <button type="submit">Convert</button> <br>
-        <label for="rounding">
-            Round to
-            <input type="number" id="rounding" name="rounding" value="{{ rounding }}">
-            decimal places
-        </label>
-    </form>
+<h1>Weight converter</h1>
+<form method="post">
+    {{ form.hidden_tag() }}
+    {{ form.value.label }}
+    {{ form.value }} <br>
+    {% for error in form.value.errors %}
+        <span style="color: red;">[{{ error }}]</span> <br>
+    {% endfor %}
+    {{ form.input_measure.label }}
+    <!-- Create list of weight unit type -->
+    {{ form.input_measure }}
+    {{ form.output_measure.label }}
+    {{ form.output_measure }}
 
-    {% if result is not none %}
-    <h2>Converted Value: {{ result }}</h2>
-    {% endif %}
+    {{ form.submit }} <br>
+    <label for="rounding">
+        Round to
+        {{ form.rounding }}
+        decimal places
+    </label>
+</form>
+
+{% if result is not none %}
+<h2>Converted Value: {{ result }}</h2>
+{% endif %}
 
 {% endblock %}
