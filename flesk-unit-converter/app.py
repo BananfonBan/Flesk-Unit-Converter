@@ -8,15 +8,6 @@ from .config import Config
 app = Flask(__name__)
 app.config.from_object(Config)
 
-# TODO
-# - Make automatic tests
-# - Закончить переделку логики под работу с формами
-#       - Сделать шаблоны под температуру и длинну
-#       - Добавить обработчики в этот фай
-#       - Триста раз все проверить
-#       - Возможно переделать запуск через guicorn
-#       - залить на github и на сайт для бесплатного хостинга
-
 
 @app.route("/")
 def home():
